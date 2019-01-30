@@ -627,6 +627,12 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 				metricType: prometheus.GaugeValue,
 			},
 			{
+				name:       "jobs_rerunable",
+				desc:       "pbspro_exporter: Jobs Rerunable",
+				value:      float64(ss.Rerunable),
+				metricType: prometheus.GaugeValue,
+			},
+			{
 				name:       "jobs_resources_list_ncpus",
 				desc:       "pbspro_exporter: Jobs Resources List Ncpus",
 				value:      float64(ss.ResourceListNcpus),
@@ -689,7 +695,6 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			ss.KeepFiles,
 			ss.MailPoints,
 			ss.OutputPath,
-			ss.Rerunable,
 			ss.ResourceListPlace,
 			ss.ResourceListSelect,
 			ss.ResourceListSoftware,
@@ -717,7 +722,6 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			"KeepFiles",
 			"MailPoints",
 			"OutputPath",
-			"Rerunable",
 			"ResourceListPlace",
 			"ResourceListSelect",
 			"ResourceListSoftware",
