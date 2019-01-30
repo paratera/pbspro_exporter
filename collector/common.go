@@ -62,12 +62,12 @@ func registerCollector(collector string, isDefaultEnabled bool, factory func() (
 	factories[collector] = factory
 }
 
-// NodeCollector implements the prometheus.Collector interface.
+// PBSCollector implements the prometheus.Collector interface.
 type PBSCollector struct {
 	Collectors map[string]Collector
 }
 
-// NewNodeCollector creates a new NodeCollector.
+// NewPBSCollector creates a new PBSCollector.
 func NewPBSCollector(filters ...string) (*PBSCollector, error) {
 	f := make(map[string]bool)
 	for _, filter := range filters {
