@@ -265,23 +265,25 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 				metricType: prometheus.GaugeValue,
 			},
 		}
-		labels = []string{ss.ServerName, ss.ServerHost, ss.DefaultQueue, ss.MailFrom, ss.PBSVersion}
+		labelsValue = []string{ss.ServerName, ss.ServerHost, ss.DefaultQueue, ss.MailFrom, ss.PBSVersion}
 	}
 
 	for _, m := range allMetrics {
 
+		labelsName := []string{"ServerName","ServerHost","DefaultQueue","MailFrom","PBSVersion"}
+
 		desc := prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m.name),
 			m.desc,
+			labelsName...,
 			nil,
-			labels...,
 		)
 
 		ch <- prometheus.MustNewConstMetric(
 			desc,
 			m.metricType,
 			m.value,
-			labels...,
+			labelsValue...,
 		)
 	}
 
