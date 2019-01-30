@@ -106,9 +106,9 @@ func (h *handler) innerHandler(filters ...string) (http.Handler, error) {
 	}
 
 	r := prometheus.NewRegistry()
-	r.MustRegister(version.NewCollector("node_exporter"))
+	r.MustRegister(version.NewCollector("pbspro_exporter"))
 	if err := r.Register(nc); err != nil {
-		return nil, fmt.Errorf("couldn't register node collector: %s", err)
+		return nil, fmt.Errorf("couldn't register pbspro collector: %s", err)
 	}
 	handler := promhttp.HandlerFor(
 		prometheus.Gatherers{h.exporterMetricsRegistry, r},
@@ -149,19 +149,19 @@ func main() {
 	)
 
 	log.AddFlags(kingpin.CommandLine)
-	kingpin.Version(version.Print("node_exporter"))
+	kingpin.Version(version.Print("pbspro_exporter"))
 	kingpin.HelpFlag.Short('h')
 	kingpin.Parse()
 
-	log.Infoln("Starting node_exporter", version.Info())
+	log.Infoln("Starting pbspro_exporter", version.Info())
 	log.Infoln("Build context", version.BuildContext())
 
 	http.Handle(*metricsPath, newHandler(!*disableExporterMetrics, *maxRequests))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`<html>
-			<head><title>Node Exporter</title></head>
+			<head><title>PBSPro Exporter</title></head>
 			<body>
-			<h1>Node Exporter</h1>
+			<h1>PBSPro Exporter</h1>
 			<p><a href="` + *metricsPath + `">Metrics</a></p>
 			</body>
 			</html>`))
