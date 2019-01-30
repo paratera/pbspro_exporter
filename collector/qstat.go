@@ -43,7 +43,7 @@ func (c *qstatCollector) updateQstatServer(ch chan<- prometheus.Metric) {
 	//var metrics []qstatMetric
 	var labelsValue []string
 
-	qstat, err := qstat.NewQstat(pbsproURL)
+	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -294,7 +294,7 @@ func (c *qstatCollector) updateQstatQueue(ch chan<- prometheus.Metric) {
 	//var metrics []qstatMetric
 	var labelsValue []string
 
-	qstat, err := qstat.NewQstat(pbsproURL)
+	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -419,7 +419,7 @@ func (c *qstatCollector) updateQstatNode(ch chan<- prometheus.Metric) {
 	//var metrics []qstatMetric
 	var labelsValue []string
 
-	qstat, err := qstat.NewQstat(pbsproURL)
+	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -544,7 +544,7 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 	//var metrics []qstatMetric
 	var labelsValue []string
 
-	qstat, err := qstat.NewQstat(pbsproURL)
+	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
 		fmt.Println(err.Error())
 	}

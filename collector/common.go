@@ -16,7 +16,7 @@ const (
 )
 
 var (
-	pbsproURL = kingpin.Flag("collector.pbspro.url", "PBSpro Server IP Address").Default('127.0.0.1').String()
+	pbsproURL = kingpin.Flag("collector.pbspro.url", "PBSpro Server IP Address").Default("127.0.0.1").String()
 )
 
 var (
