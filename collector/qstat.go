@@ -71,20 +71,20 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		{
 			name:       "server_state",
 			desc:       "pbspro_exporter: server state.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_host",
 			desc:       "pbspro_exporter: Server Host.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 
 			name:       "server_scheduling",
 			desc:       "pbspro_exporter: Server Scheduling.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
@@ -138,7 +138,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		{
 			name:       "server_default_queue",
 			desc:       "pbspro_exporter: Server Default Queue.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
@@ -150,13 +150,13 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		{
 			name:       "server_mail_from",
 			desc:       "pbspro_exporter: Server Mail From.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_query_other_jobs",
 			desc:       "pbspro_exporter: Server Query Other Jobs.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
@@ -198,7 +198,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		{
 			name:       "server_resv_enable",
 			desc:       "pbspro_exporter: Server Resv Enable.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
@@ -252,25 +252,25 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		{
 			name:       "server_pbs_version",
 			desc:       "pbspro_exporter: Server PBS Version.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_eligible_time_enable",
 			desc:       "pbspro_exporter: Server Eligible Time Enable.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_job_history_enable",
 			desc:       "pbspro_exporter: Server Job History Enable.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_job_history_duration",
 			desc:       "pbspro_exporter: Server Job History Duration.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
@@ -282,7 +282,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		{
 			name:       "server_power_provisioning",
 			desc:       "pbspro_exporter: Server Power Provisioning.",
-			value:      float(0)
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 	}
