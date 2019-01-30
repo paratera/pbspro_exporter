@@ -270,12 +270,12 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 
 	for _, m := range allMetrics {
 
-		labelsName := []string{"ServerName","ServerHost","DefaultQueue","MailFrom","PBSVersion"}
+		labelsName := []string{"ServerName", "ServerHost", "DefaultQueue", "MailFrom", "PBSVersion"}
 
 		desc := prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m.name),
 			m.desc,
-			labelsName...,
+			labelsName,
 			nil,
 		)
 
