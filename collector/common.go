@@ -16,6 +16,10 @@ const (
 )
 
 var (
+	pbsproURL = kingpin.Flag("collector.pbspro.url", "PBSpro Server IP Address").Default('127.0.0.1').String()
+)
+
+var (
 	scrapeDurationDesc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "scrape", "collector_duration_seconds"),
 		"pbspro_exporter: Duration of a collector scrape.",
