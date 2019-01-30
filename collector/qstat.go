@@ -287,11 +287,26 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		},
 	}
 
-	fmt.Println(allMetrics)
-
 	err = qstat.DisconnectPBS()
 	if err != nil {
 		fmt.Println("DisconnectPBS Error")
+	}
+
+	for _, m := range allMetrics {
+
+		desc := prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m.name),
+			m.desc,
+			nil,
+			nil,
+		)
+
+		ch <- prometheus.MustNewConstMetric(
+			desc,
+			m.metricType,
+			m.value,
+			nil,
+		)
 	}
 
 }
