@@ -65,8 +65,8 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		{
 			name:       "server_name",
 			desc:       "pbspro_exporter: server name.",
-			value:      qstat.ServerState[0].ServerName,
-			metricType: prometheus.UntypedValue,
+			value:      float64(0),
+			metricType: prometheus.GaugeValu,
 		},
 		{
 			name:       "server_state",
