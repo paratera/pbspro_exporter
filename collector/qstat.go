@@ -305,7 +305,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 			desc,
 			m.metricType,
 			m.value,
-			nil,
+			"",
 		)
 	}
 
