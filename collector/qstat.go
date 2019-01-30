@@ -1,6 +1,8 @@
 package collector
 
 import (
+	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/taylor840326/go_pbspro/qstat"
 )
@@ -43,7 +45,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 
 	qstat, err := qstat.NewQstat("172.18.7.10")
 	if err != nil {
-		t.Error(err)
+		fmt.Println(err.Error())
 	}
 
 	qstat.SetAttribs(nil)
@@ -52,7 +54,6 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 	err = qstat.ConnectPBS()
 	if err != nil {
 		fmt.Println("ConnectPBS Error")
-		t.Error(err)
 	}
 
 	err = qstat.PbsServerState()
@@ -64,224 +65,224 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		{
 			name:       "server_name",
 			desc:       "pbspro_exporter: server name.",
-			value:      string(qstat.ServerState[0].ServerName),
-			metricType: prometheus.GaugeValue,
+			value:      qstat.ServerState[0].ServerName,
+			metricType: prometheus.UntypedValue,
 		},
 		{
 			name:       "server_state",
 			desc:       "pbspro_exporter: server state.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_host",
 			desc:       "pbspro_exporter: Server Host.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 
 			name:       "server_scheduling",
 			desc:       "pbspro_exporter: Server Scheduling.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_total_jobs",
 			desc:       "pbspro_exporter: Server Total Jobs.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_transit_state_count",
 			desc:       "pbspro_exporter: Server Transit State Count.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_queued_state_count",
 			desc:       "pbspro_exporter: Server Queued State Count.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_held_state_count",
 			desc:       "pbspro_exporter: Server Held State Count.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_waiting_state_count",
 			desc:       "pbspro_exporter: Server Waiting State Count.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_running_state_count",
 			desc:       "pbspro_exporter: Server Running State Count.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_exiting_state_count",
 			desc:       "pbspro_exporter: Server Exiting State Count.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_begun_state_count",
 			desc:       "pbspro_exporter: Server Begun State Count.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_default_queue",
 			desc:       "pbspro_exporter: Server Default Queue.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_log_events",
 			desc:       "pbspro_exporter: Server Log Events.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_mail_from",
 			desc:       "pbspro_exporter: Server Mail From.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_query_other_jobs",
 			desc:       "pbspro_exporter: Server Query Other Jobs.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_resources_default_ncpus",
 			desc:       "pbspro_exporter: Server Resources Default Ncpus.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_default_chunk_ncpus",
 			desc:       "pbspro_exporter: Server Default Chunk Ncpus.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_resources_assigned_ncpus",
 			desc:       "pbspro_exporter: Server Resources Assigned Ncpus.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_resources_assigned_nodect",
 			desc:       "pbspro_exporter: Server Resources Assigned Nodect.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_scheduler_iteration",
 			desc:       "pbspro_exporter: Server Scheudler Iteration.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_flicenses",
 			desc:       "pbspro_exporter: Server Flicense.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_resv_enable",
 			desc:       "pbspro_exporter: Server Resv Enable.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_node_fail_requeue",
 			desc:       "pbspro_exporter: Server Node Fail Requeue.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_max_array_size",
 			desc:       "pbspro_exporter: Server Max Array Size.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_pbs_license_min",
 			desc:       "pbspro_exporter: Server PBS License Min.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_pbs_license_max",
 			desc:       "pbspro_exporter: Server PBS License Max.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_pbs_license_linger_time",
 			desc:       "pbspro_exporter: Server PBS License Linger Time.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_license_count_avail_global",
 			desc:       "pbspro_exporter: Server License Count Avail Global.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_license_used",
 			desc:       "pbspro_exporter: Server License Used.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_license_count_high_use",
 			desc:       "pbspro_exporter: Server License Count High Use.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_pbs_version",
 			desc:       "pbspro_exporter: Server PBS Version.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_eligible_time_enable",
 			desc:       "pbspro_exporter: Server Eligible Time Enable.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_job_history_enable",
 			desc:       "pbspro_exporter: Server Job History Enable.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_job_history_duration",
 			desc:       "pbspro_exporter: Server Job History Duration.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_max_concurrent_provision",
 			desc:       "pbspro_exporter: Server Max Concurrent Provision.",
-			value:      int64,
+			value:      float64(0),
 			metricType: prometheus.GaugeValue,
 		},
 		{
 			name:       "server_power_provisioning",
 			desc:       "pbspro_exporter: Server Power Provisioning.",
-			value:      string,
+			value:      float(0)
 			metricType: prometheus.GaugeValue,
 		},
 	}
@@ -289,7 +290,6 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 	err = qstat.DisconnectPBS()
 	if err != nil {
 		fmt.Println("DisconnectPBS Error")
-		t.Error(err)
 	}
 
 }
