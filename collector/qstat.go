@@ -274,7 +274,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 			prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m.name),
 			m.desc,
 			nil,
-			nil,
+			labels...,
 		)
 
 		ch <- prometheus.MustNewConstMetric(
