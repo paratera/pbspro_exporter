@@ -42,7 +42,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 
 	var allMetrics []qstatMetric
 	//var metrics []qstatMetric
-	var labels []string{}
+	var labels []string
 
 	qstat, err := qstat.NewQstat("172.18.7.10")
 	if err != nil {
@@ -265,7 +265,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 				metricType: prometheus.GaugeValue,
 			},
 		}
-		labels = []string{qstat.ServerName,qstat.ServerHost,qstat.DefaultQueue,qstat.MailFrom,qstat.PBSVersion}
+		labels = []string{qstat.ServerName, qstat.ServerHost, qstat.DefaultQueue, qstat.MailFrom, qstat.PBSVersion}
 	}
 
 	for _, m := range allMetrics {
