@@ -19,6 +19,7 @@ func (c *qstatCollector) Update(ch chan<- prometheus.Metric) error {
 	c.updateQstatServer(ch)
 	c.updateQstatQueue(ch)
 	c.updateQstatNode(ch)
+	c.updateQstatJobs(ch)
 	return nil
 }
 
@@ -519,6 +520,213 @@ func (c *qstatCollector) updateQstatNode(ch chan<- prometheus.Metric) {
 	for _, m := range allMetrics {
 
 		labelsName := []string{"NodeName", "Mom", "Ntype", "NodeState", "RunningJobs", "ResourcesAvailableArch", "ResourcesAvailableHost", "ResourcesAvailableApplications", "ResourcesAvailablePlatform", "ResourcesAvailableSoftware", "ResourcesAvailableVnodes", "Sharing"}
+
+		desc := prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m.name),
+			m.desc,
+			labelsName,
+			nil,
+		)
+
+		ch <- prometheus.MustNewConstMetric(
+			desc,
+			m.metricType,
+			m.value,
+			labelsValue...,
+		)
+	}
+
+}
+
+func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
+
+	var allMetrics []qstatMetric
+	//var metrics []qstatMetric
+	var labelsValue []string
+
+	qstat, err := qstat.NewQstat("172.18.7.10")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	qstat.SetAttribs(nil)
+	qstat.SetExtend("")
+
+	err = qstat.ConnectPBS()
+	if err != nil {
+		fmt.Println("ConnectPBS Error")
+	}
+	defer qstat.DisconnectPBS()
+
+	err = qstat.PbsJobsState()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	for _, ss := range qstat.JobsState {
+		allMetrics = []qstatMetric{
+			{
+				name:       "jobs_resources_used_cpupercent",
+				desc:       "pbspro_exporter: Jobs Resources Used CpuPercent.",
+				value:      ss.ResourcesUsedCpuPercent,
+				metricType: prometheus.GaugeValue,
+			},
+			{
+
+				name:       "jobs_resources_used_cput",
+				desc:       "pbspro_exporter: Jobs Resources Used Cput",
+				value:      float64(ss.ResourcesUsedCput),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_resources_used_mem",
+				desc:       "pbspro_exporter: Jobs Resources Used Mem.",
+				value:      float64(ss.ResourcesUsedMem),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_resources_used_ncpus",
+				desc:       "pbspro_exporter: Jobs Resources Used Ncpus.",
+				value:      float64(ss.ResourcesUsedNcpus),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_resources_used_vmem",
+				desc:       "pbspro_exporter: Jobs Resources Used Vmem.",
+				value:      float64(ss.ResourcesUsedVmem),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_resources_used_walltime",
+				desc:       "pbspro_exporter: Jobs Resources Used WallTime.",
+				value:      float64(ss.ResourcesUsedWallTime),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_ctime",
+				desc:       "pbspro_exporter: Jobs Çtime.",
+				value:      float64(ss.Ctime),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_mtime",
+				desc:       "pbspro_exporter: Jobs Mtime.",
+				value:      float64(ss.Mtime),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_priority",
+				desc:       "pbspro_exporter: Jobs Priority.",
+				value:      float64(ss.Priority),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_qtime",
+				desc:       "pbspro_exporter: Jobs Qtime",
+				value:      float64(ss.Qtime),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_resources_list_ncpus",
+				desc:       "pbspro_exporter: Jobs Resources List Ncpus",
+				value:      float64(ss.ResourceListNcpus),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_resources_list_nodect",
+				desc:       "pbspro_exporter: Jobs Resources List Nodect",
+				value:      float64(ss.ResourceListNodect),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_resources_list_walltime",
+				desc:       "pbspro_exporter: Jobs Resources List WallTime",
+				value:      float64(ss.ResourceListWallTime),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_stime",
+				desc:       "pbspro_exporter: Jobs stime",
+				value:      float64(ss.Stime),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_sessionid",
+				desc:       "pbspro_exporter: Jobs Session ID",
+				value:      float64(ss.SessionID),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_substate",
+				desc:       "pbspro_exporter: Jobs SubState",
+				value:      float64(ss.SubState),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_etime",
+				desc:       "pbspro_exporter: Jobs Etime",
+				value:      float64(ss.Etime),
+				metricType: prometheus.GaugeValue,
+			},
+			{
+				name:       "jobs_runcount",
+				desc:       "pbspro_exporter: Jobs RunCount",
+				value:      float64(ss.RunCount),
+				metricType: prometheus.GaugeValue,
+			},
+		}
+		labelsValue = []string{ss.JobName,
+			ss.JobOwner,
+			ss.JobState,
+			ss.Queue,
+			ss.Server,
+			ss.CheckPoint,
+			ss.ErrorPath,
+			ss.ExecHost,
+			ss.ExecVnode,
+			ss.HoldType,
+			ss.JoinPath,
+			ss.KeepFiles,
+			ss.MailPoints,
+			ss.OutputPath,
+			ss.Rerunable,
+			ss.ResourceListPlace,
+			ss.ResourceListSelect,
+			ss.ResourceListSoftware,
+			ss.JobDir,
+			ss.VariableList,
+			ss.Comment,
+			ss.SubmitArguments,
+			ss.Project,
+		}
+	}
+
+	for _, m := range allMetrics {
+
+		labelsName := []string{"JobName",
+			"JobOwner",
+			"JobState",
+			"Queue",
+			"Server",
+			"CheckPoint",
+			"ErrorPath",
+			"ExecHost",
+			"ExecVnode",
+			"HoldType",
+			"JoinPath",
+			"KeepFiles",
+			"MailPoints",
+			"OutputPath",
+			"Rerunable",
+			"ResourceListPlace",
+			"ResourceListSelect",
+			"ResourceListSoftware",
+			"JobDir",
+			"VariableList",
+			"Comment",
+			"SubmitArguments",
+			"Project",
+		}
 
 		desc := prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m.name),
