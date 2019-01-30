@@ -1,255 +1,295 @@
 package collector
 
-import "github.com/prometheus/client_golang/prometheus"
+import (
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/taylor840326/go_pbspro/qstat"
+)
 
 const (
 	qstatCollectorSubSystem = "qstat"
 )
 
-var (
-	// server_state
-	pbsproServerState = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_state"),
-		"pbspro_exporter: server state.",
-		[]string{"collector"},
-		nil,
-	)
-	// server_host
-	pbsproServerHost = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_host"),
-		"pbspro_exporter: Server Host.",
-		[]string{"collector"},
-		nil,
-	)
-	// scheduling
-	pbsproServerScheduling = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_scheduling"),
-		"pbspro_exporter: Server Scheduling.",
-		[]string{"collector"},
-		nil,
-	)
-	// total_jobs
-	pbsproServerTotalJobs = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_total_jobs"),
-		"pbspro_exporter: Server Total Jobs.",
-		[]string{"collector"},
-		nil,
-	)
-	// transit_state_count
-	pbsproServerTransitStateCount = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_transit_state_count"),
-		"pbspro_exporter: Server Transit State Count.",
-		[]string{"collector"},
-		nil,
-	)
-	// queued_state_count
-	pbsproServerQueuedStateCount = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_queued_state_count"),
-		"pbspro_exporter: Server Queued State Count.",
-		[]string{"collector"},
-		nil,
-	)
-	// held_state_count
-	pbsproServerHeldStateCount = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_held_state_count"),
-		"pbspro_exporter: Server Held State Count.",
-		[]string{"collector"},
-		nil,
-	)
-	// waiting_state_count
-	pbsproServerWaitingStateCount = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_waiting_state_count"),
-		"pbspro_exporter: Server Waiting State Count.",
-		[]string{"collector"},
-		nil,
-	)
-	// running_state_count
-	pbsproServerRunningStateCount = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_running_state_count"),
-		"pbspro_exporter: Server Running State Count.",
-		[]string{"collector"},
-		nil,
-	)
-	// exiting_state_count
-	pbsproServerExitingStateCount = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_exiting_state_count"),
-		"pbspro_exporter: Server Exiting State Count.",
-		[]string{"collector"},
-		nil,
-	)
-	// begun_state_count
-	pbsproServerBegunStateCount = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_begun_state_count"),
-		"pbspro_exporter: Server Begun State Count.",
-		[]string{"collector"},
-		nil,
-	)
-	// default_queue
-	pbsproServerDefaultQueue = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_default_queue"),
-		"pbspro_exporter: Server Default Queue.",
-		[]string{"collector"},
-		nil,
-	)
-	// log_events
-	pbsproServerLogEvents = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_log_events"),
-		"pbspro_exporter: Server Log Events.",
-		[]string{"collector"},
-		nil,
-	)
-	// mail_from
-	pbsproServerMailFrom = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_mail_from"),
-		"pbspro_exporter: Server Mail From.",
-		[]string{"collector"},
-		nil,
-	)
-	// query_other_jobs
-	pbsproServerQueryOtherJobs = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_query_other_jobs"),
-		"pbspro_exporter: Server Query Other Jobs.",
-		[]string{"collector"},
-		nil,
-	)
-	// resources_default_ncpus
-	pbsproServerResourcesDefaultNcpus = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_resources_default_ncpus"),
-		"pbspro_exporter: Server Resources Default Ncpus.",
-		[]string{"collector"},
-		nil,
-	)
-	// default_chunk_ncpus
-	pbsproServerDefaultChunkNcpus = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_default_chunk_ncpus"),
-		"pbspro_exporter: Server Default Chunk Ncpus.",
-		[]string{"collector"},
-		nil,
-	)
-	// resources_assigned_ncpus
-	pbsproServerResourcesAssignedNcpus = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_resources_assigned_ncpus"),
-		"pbspro_exporter: Server Resources Assigned Ncpus.",
-		[]string{"collector"},
-		nil,
-	)
-	// resources_assigned_nodect
-	pbsproServerResourcesAssignedNodect = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_resources_assigned_nodect"),
-		"pbspro_exporter: Server Resources Assigned Nodect.",
-		[]string{"collector"},
-		nil,
-	)
-	// scheduler_iteration
-	pbsproServerSchedulerIteration = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_scheduler_iteration"),
-		"pbspro_exporter: Server Scheudler Iteration.",
-		[]string{"collector"},
-		nil,
-	)
-	// flicenses
-	pbsproServerFlicenses = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_flicenses"),
-		"pbspro_exporter: Server Flicense.",
-		[]string{"collector"},
-		nil,
-	)
-	//resv_enable
-	pbsproServerResvEnable = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_resv_enable"),
-		"pbspro_exporter: Server Resv Enable.",
-		[]string{"collector"},
-		nil,
-	)
-	// node_fail_requeue
-	pbsproServerNodeFailRequeue = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_node_fail_requeue"),
-		"pbspro_exporter: Server Node Fail Requeue.",
-		[]string{"collector"},
-		nil,
-	)
-	// max_array_size
-	pbsproServerMaxArraySize = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_max_array_size"),
-		"pbspro_exporter: Server Max Array Size.",
-		[]string{"collector"},
-		nil,
-	)
-	// pbs_license_min
-	pbsproServerPbsLicenseMin = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_pbs_license_min"),
-		"pbspro_exporter: Server PBS License Min.",
-		[]string{"collector"},
-		nil,
-	)
-	// pbs_license_max
-	pbsproServerPbsLicenseMax = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_pbs_license_max"),
-		"pbspro_exporter: Server PBS License Max.",
-		[]string{"collector"},
-		nil,
-	)
-	// pbs_license_linger_time
-	pbsproServerPbsLicenseLingerTime = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_pbs_license_linger_time"),
-		"pbspro_exporter: Server PBS License Linger Time.",
-		[]string{"collector"},
-		nil,
-	)
-	// license_count_avail_global
-	pbsproServerLicenseCountAvailGlobal = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_license_count_avail_global"),
-		"pbspro_exporter: Server License Count Avail Global.",
-		[]string{"collector"},
-		nil,
-	)
-	// license_count_used
-	pbsproServerLicenseCountUsed = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_license_used"),
-		"pbspro_exporter: Server License Used.",
-		[]string{"collector"},
-		nil,
-	)
-	// license_count_high_use
-	pbsproServerLicenseCountHighUse = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_license_count_high_use"),
-		"pbspro_exporter: Server License Count High Use.",
-		[]string{"collector"},
-		nil,
-	)
-	// pbs_version
-	pbsproServerPbsVersion = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_pbs_version"),
-		"pbspro_exporter: Server PBS Version.",
-		[]string{"collector"},
-		nil,
-	)
-	// eligible_time_enable
-	pbsproServerEligibleTimeEnable = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_eligible_time_enable"),
-		"pbspro_exporter: Server Eligible Time Enable.",
-		[]string{"collector"},
-		nil,
-	)
-	// job_history_enable
-	pbsproServerJobHistoryEnable = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_job_history_enable"),
-		"pbspro_exporter: Server Job History Enable.",
-		[]string{"collector"},
-		nil,
-	)
-	// job_history_duration
-	pbsproServerJobHistoryDuration = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_job_history_duration"),
-		"pbspro_exporter: Server Job History Duration.",
-		[]string{"collector"},
-		nil,
-	)
-	// max_concurrent_provision
-	pbsproServerMaxConcurrentProvision = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, qstatCollectorSubSystem, "server_max_concurrent_provision"),
-		"pbspro_exporter: Server Max Concurrent Provision.",
-		[]string{"collector"},
-		nil,
-	)
-)
+func init() {
+	registerCollector(qstatCollectorSubSystem, defaultEnabled, NewQstatCollector)
+}
+
+type qstatCollector struct {
+	server_state string
+}
+
+func (c *qstatCollector) Update(ch chan<- prometheus.Metric) error {
+	c.server_state = "haha"
+	return nil
+}
+
+type qstatMetric struct {
+	name            string
+	desc            string
+	value           float64
+	metricType      prometheus.ValueType
+	extraLabel      []string
+	extraLabelValue string
+}
+
+func NewQstatCollector() (Collector, error) {
+	qc := new(qstatCollector)
+	return &qstatCollector{server_state: qc.server_state}, nil
+}
+
+func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
+
+	var allMetrics []qstatMetric
+	var metrics []qstatMetric
+
+	qstat, err := qstat.NewQstat("172.18.7.10")
+	if err != nil {
+		t.Error(err)
+	}
+
+	qstat.SetAttribs(nil)
+	qstat.SetExtend("")
+
+	err = qstat.ConnectPBS()
+	if err != nil {
+		fmt.Println("ConnectPBS Error")
+		t.Error(err)
+	}
+
+	err = qstat.PbsServerState()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	allMetrics = []qstatMetric{
+		{
+			name:       "server_name",
+			desc:       "pbspro_exporter: server name.",
+			value:      string(qstat.ServerState[0].ServerName),
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_state",
+			desc:       "pbspro_exporter: server state.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_host",
+			desc:       "pbspro_exporter: Server Host.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+
+			name:       "server_scheduling",
+			desc:       "pbspro_exporter: Server Scheduling.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_total_jobs",
+			desc:       "pbspro_exporter: Server Total Jobs.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_transit_state_count",
+			desc:       "pbspro_exporter: Server Transit State Count.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_queued_state_count",
+			desc:       "pbspro_exporter: Server Queued State Count.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_held_state_count",
+			desc:       "pbspro_exporter: Server Held State Count.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_waiting_state_count",
+			desc:       "pbspro_exporter: Server Waiting State Count.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_running_state_count",
+			desc:       "pbspro_exporter: Server Running State Count.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_exiting_state_count",
+			desc:       "pbspro_exporter: Server Exiting State Count.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_begun_state_count",
+			desc:       "pbspro_exporter: Server Begun State Count.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_default_queue",
+			desc:       "pbspro_exporter: Server Default Queue.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_log_events",
+			desc:       "pbspro_exporter: Server Log Events.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_mail_from",
+			desc:       "pbspro_exporter: Server Mail From.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_query_other_jobs",
+			desc:       "pbspro_exporter: Server Query Other Jobs.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_resources_default_ncpus",
+			desc:       "pbspro_exporter: Server Resources Default Ncpus.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_default_chunk_ncpus",
+			desc:       "pbspro_exporter: Server Default Chunk Ncpus.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_resources_assigned_ncpus",
+			desc:       "pbspro_exporter: Server Resources Assigned Ncpus.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_resources_assigned_nodect",
+			desc:       "pbspro_exporter: Server Resources Assigned Nodect.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_scheduler_iteration",
+			desc:       "pbspro_exporter: Server Scheudler Iteration.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_flicenses",
+			desc:       "pbspro_exporter: Server Flicense.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_resv_enable",
+			desc:       "pbspro_exporter: Server Resv Enable.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_node_fail_requeue",
+			desc:       "pbspro_exporter: Server Node Fail Requeue.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_max_array_size",
+			desc:       "pbspro_exporter: Server Max Array Size.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_pbs_license_min",
+			desc:       "pbspro_exporter: Server PBS License Min.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_pbs_license_max",
+			desc:       "pbspro_exporter: Server PBS License Max.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_pbs_license_linger_time",
+			desc:       "pbspro_exporter: Server PBS License Linger Time.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_license_count_avail_global",
+			desc:       "pbspro_exporter: Server License Count Avail Global.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_license_used",
+			desc:       "pbspro_exporter: Server License Used.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_license_count_high_use",
+			desc:       "pbspro_exporter: Server License Count High Use.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_pbs_version",
+			desc:       "pbspro_exporter: Server PBS Version.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_eligible_time_enable",
+			desc:       "pbspro_exporter: Server Eligible Time Enable.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_job_history_enable",
+			desc:       "pbspro_exporter: Server Job History Enable.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_job_history_duration",
+			desc:       "pbspro_exporter: Server Job History Duration.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_max_concurrent_provision",
+			desc:       "pbspro_exporter: Server Max Concurrent Provision.",
+			value:      int64,
+			metricType: prometheus.GaugeValue,
+		},
+		{
+			name:       "server_power_provisioning",
+			desc:       "pbspro_exporter: Server Power Provisioning.",
+			value:      string,
+			metricType: prometheus.GaugeValue,
+		},
+	}
+
+	err = qstat.DisconnectPBS()
+	if err != nil {
+		fmt.Println("DisconnectPBS Error")
+		t.Error(err)
+	}
+
+}
