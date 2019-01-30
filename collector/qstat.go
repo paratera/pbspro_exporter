@@ -63,6 +63,21 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 		fmt.Println(err.Error())
 	}
 
+	err = qstat.PbsQueueState()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	err = qstat.PbsNodeState()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	err = qstat.PbsJobsState()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
 	for _, ss := range qstat.ServerState {
 		allMetrics = []qstatMetric{
 			{
