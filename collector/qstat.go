@@ -20,7 +20,7 @@ type qstatCollector struct {
 }
 
 func (c *qstatCollector) Update(ch chan<- prometheus.Metric) error {
-	c.server_state = "haha"
+	c.updateQstat(ch)
 	return nil
 }
 
