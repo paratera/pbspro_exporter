@@ -41,7 +41,7 @@ func NewQstatCollector() (Collector, error) {
 func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 
 	var allMetrics []qstatMetric
-	var metrics []qstatMetric
+	//var metrics []qstatMetric
 
 	qstat, err := qstat.NewQstat("172.18.7.10")
 	if err != nil {
@@ -286,6 +286,8 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 			metricType: prometheus.GaugeValue,
 		},
 	}
+
+	fmt.Println(allMetrics)
 
 	err = qstat.DisconnectPBS()
 	if err != nil {
