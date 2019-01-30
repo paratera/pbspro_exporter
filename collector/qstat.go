@@ -171,7 +171,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 			{
 				name:       "server_flicenses",
 				desc:       "pbspro_exporter: Server Flicense.",
-				value:      float64(ss.Flicense),
+				value:      float64(ss.Flicenses),
 				metricType: prometheus.GaugeValue,
 			},
 			{
@@ -265,7 +265,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 				metricType: prometheus.GaugeValue,
 			},
 		}
-		labels = []string{qstat.ServerName, qstat.ServerHost, qstat.DefaultQueue, qstat.MailFrom, qstat.PBSVersion}
+		labels = []string{ss.ServerName, ss.ServerHost, ss.DefaultQueue, ss.MailFrom, ss.PBSVersion}
 	}
 
 	for _, m := range allMetrics {
