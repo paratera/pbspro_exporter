@@ -42,7 +42,7 @@ func (c *qstatCollector) updateQstat(ch chan<- prometheus.Metric) {
 
 	var allMetrics []qstatMetric
 	//var metrics []qstatMetric
-	var labels []string
+	var labelsValue []string
 
 	qstat, err := qstat.NewQstat("172.18.7.10")
 	if err != nil {
