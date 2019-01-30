@@ -10,7 +10,10 @@ import (
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
-const namespace = "pbspro"
+const (
+	namespace               = "pbspro"
+	qstatCollectorSubSystem = "qstat"
+)
 
 var (
 	scrapeDurationDesc = prometheus.NewDesc(
