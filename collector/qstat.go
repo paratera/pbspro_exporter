@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -574,6 +575,7 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 	}
 
 	for _, ss := range qstat.JobsState {
+		localTime := time.Now().UnixNano()
 		metrics = []qstatMetric{
 			{
 				name:       "jobs_resources_used_cpupercent",
@@ -723,7 +725,7 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			ss.Comment,
 			ss.SubmitArguments,
 			ss.Project,
-			time.Now().String(),
+			fmt.Sprintf("%d", localTime),
 		}
 
 		allMetrics = append(allMetrics, metrics...)
