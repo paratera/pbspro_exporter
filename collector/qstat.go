@@ -1,9 +1,8 @@
 package collector
 
 import (
-	"fmt"
-
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/log"
 	"github.com/taylor840326/go_pbspro/qstat"
 )
 
@@ -16,9 +15,13 @@ type qstatCollector struct {
 }
 
 func (c *qstatCollector) Update(ch chan<- prometheus.Metric) error {
+	log.Infoln("Update Qstat Server Status")
 	c.updateQstatServer(ch)
+	log.Infoln("Update Qstat Queue Status")
 	c.updateQstatQueue(ch)
+	log.Infoln("Update Qstat Node Status")
 	c.updateQstatNode(ch)
+	log.Infoln("Update Qstat Jobs Status")
 	c.updateQstatJobs(ch)
 	return nil
 }
@@ -45,21 +48,22 @@ func (c *qstatCollector) updateQstatServer(ch chan<- prometheus.Metric) {
 
 	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Errorln("Create New Qstat Failed ", err.Error())
 	}
 
 	qstat.SetAttribs(nil)
 	qstat.SetExtend("")
 
+	log.Infoln("Connecting PBS Server ..")
 	err = qstat.ConnectPBS()
 	if err != nil {
-		fmt.Println("ConnectPBS Error")
+		log.Fatalln("Connecting PBS Server Failed. ", err.Error())
 	}
 	defer qstat.DisconnectPBS()
 
 	err = qstat.PbsServerState()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Errorln("Gather PBS Server Informations Failed", err.Error())
 	}
 
 	for _, ss := range qstat.ServerState {
@@ -296,21 +300,22 @@ func (c *qstatCollector) updateQstatQueue(ch chan<- prometheus.Metric) {
 
 	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Errorln("Create New Qstat Failed. ", err.Error())
 	}
 
 	qstat.SetAttribs(nil)
 	qstat.SetExtend("")
 
+	log.Infoln("Connecting PBS Server ..")
 	err = qstat.ConnectPBS()
 	if err != nil {
-		fmt.Println("ConnectPBS Error")
+		log.Fatalln("Connect PBS Server Failed. ", err.Error())
 	}
 	defer qstat.DisconnectPBS()
 
 	err = qstat.PbsQueueState()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Errorln("Update Queue State Failed. ", err.Error())
 	}
 
 	for _, ss := range qstat.QueueState {
@@ -421,21 +426,22 @@ func (c *qstatCollector) updateQstatNode(ch chan<- prometheus.Metric) {
 
 	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Errorln("Create New Qstat Failed. ", err.Error())
 	}
 
 	qstat.SetAttribs(nil)
 	qstat.SetExtend("")
 
+	log.Infoln("Connecting PBS Server.. ")
 	err = qstat.ConnectPBS()
 	if err != nil {
-		fmt.Println("ConnectPBS Error")
+		log.Fatalln("Connect PBS Server Failed. ", err.Error())
 	}
 	defer qstat.DisconnectPBS()
 
 	err = qstat.PbsNodeState()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Errorln("Update Node State Failed ", err.Error())
 	}
 
 	for _, ss := range qstat.NodeState {
@@ -546,21 +552,22 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 
 	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Errorln("Create New Qstat Failed. ", err.Error())
 	}
 
 	qstat.SetAttribs(nil)
 	qstat.SetExtend("")
 
+	log.Infoln("Connecting PBS Server..")
 	err = qstat.ConnectPBS()
 	if err != nil {
-		fmt.Println("ConnectPBS Error")
+		log.Fatalln("Connect PBS Server Failed. ", err.Error())
 	}
 	defer qstat.DisconnectPBS()
 
 	err = qstat.PbsJobsState()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Errorln("Update Jobs State Failed. ", err.Error())
 	}
 
 	for _, ss := range qstat.JobsState {
