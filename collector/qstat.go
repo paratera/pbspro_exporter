@@ -1,9 +1,7 @@
 package collector
 
 import (
-	"fmt"
 	"strings"
-	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
@@ -36,7 +34,13 @@ type qstatMetric struct {
 	value           float64
 	metricType      prometheus.ValueType
 	extraLabel      []string
-	extraLabelValue string
+	extraLabelValue []string
+}
+
+type qstatStateMetric struct {
+	AllMetrics  []qstatMetric
+	LabelsName  []string
+	LabelsValue []string
 }
 
 func NewQstatCollector() (Collector, error) {
@@ -550,6 +554,8 @@ func (c *qstatCollector) updateQstatNode(ch chan<- prometheus.Metric) {
 
 func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 
+	var tmpJobsStateMetrics qstatStateMetric
+	var allJobsStateMetrics []qstatStateMetric
 	var allMetrics []qstatMetric
 	var metrics []qstatMetric
 	var labelsValue []string
@@ -575,7 +581,6 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 	}
 
 	for _, ss := range qstat.JobsState {
-		localTime := time.Now().UnixNano()
 		metrics = []qstatMetric{
 			{
 				name:       "jobs_resources_used_cpupercent",
@@ -693,46 +698,6 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 				metricType: prometheus.GaugeValue,
 			},
 		}
-		labelsValue = []string{ss.JobName,
-			strings.Replace(ss.JobOwner, "@", "_", -1),
-			ss.JobState,
-			ss.Queue,
-			ss.Server,
-			ss.CheckPoint,
-			ss.ErrorPath,
-			ss.ExecHost,
-			ss.ExecVnode,
-			ss.HoldType,
-			ss.JoinPath,
-			ss.KeepFiles,
-			ss.MailPoints,
-			ss.OutputPath,
-			ss.ResourceListPlace,
-			ss.ResourceListSelect,
-			ss.ResourceListSoftware,
-			ss.JobDir,
-			ss.VariableList,
-			strings.Replace(ss.VariableListHome, "/", "-1", -1),
-			strings.Replace(ss.VariableListLang, ".", "_", -1),
-			ss.VariableListLogname,
-			ss.VariableListPath,
-			ss.VariableListMail,
-			ss.VariableListShell,
-			ss.VariableListWorkdir,
-			ss.VariableListSystem,
-			ss.VariableListQueue,
-			ss.VariableListHost,
-			ss.Comment,
-			ss.SubmitArguments,
-			ss.Project,
-			fmt.Sprintf("%d", localTime),
-		}
-
-		allMetrics = append(allMetrics, metrics...)
-	}
-
-	for _, m := range allMetrics {
-
 		labelsName := []string{"JobName",
 			"JobOwner",
 			"JobState",
@@ -765,21 +730,66 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			"Comment",
 			"SubmitArguments",
 			"Project",
-			"LocalTime",
 		}
-		desc := prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m.name),
-			m.desc,
-			labelsName,
-			nil,
-		)
+		labelsValue = []string{ss.JobName,
+			strings.Replace(ss.JobOwner, "@", "_", -1),
+			ss.JobState,
+			ss.Queue,
+			ss.Server,
+			ss.CheckPoint,
+			ss.ErrorPath,
+			ss.ExecHost,
+			ss.ExecVnode,
+			ss.HoldType,
+			ss.JoinPath,
+			ss.KeepFiles,
+			ss.MailPoints,
+			ss.OutputPath,
+			ss.ResourceListPlace,
+			ss.ResourceListSelect,
+			ss.ResourceListSoftware,
+			ss.JobDir,
+			ss.VariableList,
+			strings.Replace(ss.VariableListHome, "/", "-1", -1),
+			strings.Replace(ss.VariableListLang, ".", "_", -1),
+			ss.VariableListLogname,
+			ss.VariableListPath,
+			ss.VariableListMail,
+			ss.VariableListShell,
+			ss.VariableListWorkdir,
+			ss.VariableListSystem,
+			ss.VariableListQueue,
+			ss.VariableListHost,
+			ss.Comment,
+			ss.SubmitArguments,
+			ss.Project,
+		}
 
-		ch <- prometheus.MustNewConstMetric(
-			desc,
-			m.metricType,
-			m.value,
-			labelsValue...,
-		)
+		tmpJobsStateMetrics.AllMetrics = append(tmpJobsStateMetrics.AllMetrics, metrics...)
+		tmpJobsStateMetrics.LabelsName = labelsName
+		tmpJobsStateMetrics.LabelsValue = labelsValue
+
+		allJobsStateMetrics = append(allJobsStateMetrics, tmpJobsStateMetrics)
+	}
+
+	for _, m := range allJobsStateMetrics {
+
+		for _, m2 := range m.AllMetrics {
+			desc := prometheus.NewDesc(
+				prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m2.name),
+				m2.desc,
+				m.LabelsName,
+				nil,
+			)
+
+			ch <- prometheus.MustNewConstMetric(
+				desc,
+				m2.metricType,
+				m2.value,
+				m.LabelsValue...,
+			)
+
+		}
 	}
 
 }
