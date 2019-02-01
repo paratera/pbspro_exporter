@@ -2,6 +2,7 @@ package collector
 
 import (
 	"strings"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
@@ -722,6 +723,7 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			ss.Comment,
 			ss.SubmitArguments,
 			ss.Project,
+			time.Now().String(),
 		}
 
 		allMetrics = append(allMetrics, metrics...)
@@ -761,6 +763,7 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			"Comment",
 			"SubmitArguments",
 			"Project",
+			"LocalTime",
 		}
 		desc := prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m.name),
