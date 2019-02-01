@@ -691,7 +691,7 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			},
 		}
 		labelsValue = []string{ss.JobName,
-			strings.Replace(ss.JobOwner, "@", "-1", -1),
+			strings.Replace(ss.JobOwner, "@", "_", -1),
 			ss.JobState,
 			ss.Queue,
 			ss.Server,
