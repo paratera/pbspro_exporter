@@ -550,7 +550,6 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 
 	var allMetrics []qstatMetric
 	var metrics []qstatMetric
-	var labelsValue []string
 
 	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
