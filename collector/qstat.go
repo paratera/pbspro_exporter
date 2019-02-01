@@ -1,6 +1,8 @@
 package collector
 
 import (
+	"strings"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
 	"github.com/taylor840326/go_pbspro/qstat"
@@ -547,8 +549,42 @@ func (c *qstatCollector) updateQstatNode(ch chan<- prometheus.Metric) {
 func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 
 	var allMetrics []qstatMetric
-	//var metrics []qstatMetric
+	var metrics []qstatMetric
 	var labelsValue []string
+
+	labelsName := []string{"JobName",
+		"JobOwner",
+		"JobState",
+		"Queue",
+		"Server",
+		"CheckPoint",
+		"ErrorPath",
+		"ExecHost",
+		"ExecVnode",
+		"HoldType",
+		"JoinPath",
+		"KeepFiles",
+		"MailPoints",
+		"OutputPath",
+		"ResourceListPlace",
+		"ResourceListSelect",
+		"ResourceListSoftware",
+		"JobDir",
+		"VariableList",
+		"VariableListHome",
+		"VariableListLang",
+		"VariableListLogname",
+		"VariableListPath",
+		"VariableListMail",
+		"VariableListShell",
+		"VariableListWrokdir",
+		"VariableListSystem",
+		"VariableListQueue",
+		"VariableListHost",
+		"Comment",
+		"SubmitArguments",
+		"Project",
+	}
 
 	qstat, err := qstat.NewQstat(*pbsproURL)
 	if err != nil {
@@ -571,7 +607,7 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 	}
 
 	for _, ss := range qstat.JobsState {
-		allMetrics = []qstatMetric{
+		metrics = []qstatMetric{
 			{
 				name:       "jobs_resources_used_cpupercent",
 				desc:       "pbspro_exporter: Jobs Resources Used CpuPercent.",
@@ -689,7 +725,7 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			},
 		}
 		labelsValue = []string{ss.JobName,
-			ss.JobOwner,
+			strings.Replace(ss.JobOwner, "@", "-1", -1),
 			ss.JobState,
 			ss.Queue,
 			ss.Server,
@@ -707,8 +743,8 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			ss.ResourceListSoftware,
 			ss.JobDir,
 			ss.VariableList,
-			ss.VariableListHome,
-			ss.VariableListLang,
+			strings.Replace(ss.VariableListHome, "/", "-1", -1),
+			strings.Replace(ss.VariableListLang, ".", "_", -1),
 			ss.VariableListLogname,
 			ss.VariableListPath,
 			ss.VariableListMail,
@@ -721,43 +757,11 @@ func (c *qstatCollector) updateQstatJobs(ch chan<- prometheus.Metric) {
 			ss.SubmitArguments,
 			ss.Project,
 		}
+
+		allMetrics = append(allMetrics, metrics...)
 	}
 
 	for _, m := range allMetrics {
-
-		labelsName := []string{"JobName",
-			"JobOwner",
-			"JobState",
-			"Queue",
-			"Server",
-			"CheckPoint",
-			"ErrorPath",
-			"ExecHost",
-			"ExecVnode",
-			"HoldType",
-			"JoinPath",
-			"KeepFiles",
-			"MailPoints",
-			"OutputPath",
-			"ResourceListPlace",
-			"ResourceListSelect",
-			"ResourceListSoftware",
-			"JobDir",
-			"VariableList",
-			"VariableListHome",
-			"VariableListLang",
-			"VariableListLogname",
-			"VariableListPath",
-			"VariableListMail",
-			"VariableListShell",
-			"VariableListWrokdir",
-			"VariableListSystem",
-			"VariableListQueue",
-			"VariableListHost",
-			"Comment",
-			"SubmitArguments",
-			"Project",
-		}
 
 		desc := prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, qstatCollectorSubSystem, m.name),
