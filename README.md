@@ -1,5 +1,8 @@
 # pbspro_exporter
-PBSpro prometheus exporter
+
+**This is not an official Paratera product**
+
+Prometheus exporter of PBSPro
 
 ## 1.How to build
 
