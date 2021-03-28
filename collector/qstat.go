@@ -5,7 +5,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
-	"github.com/taylor840326/go_pbspro/qstat"
+	"github.com/paratera/go_pbspro/qstat"
 )
 
 func init() {
